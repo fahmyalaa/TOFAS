@@ -301,7 +301,7 @@
     <div class="modal-rules">
       <div class="modal-rule"><span class="icon">⏱️</span><span><strong style="color:var(--text)">40 minutes</strong> — same as the real exam. Timer starts when you click Begin.</span></div>
       <div class="modal-rule"><span class="icon">🚫</span><span><strong style="color:var(--orange)">No calculator allowed</strong> — use mental math only, just like the real exam.</span></div>
-      <div class="modal-rule"><span class="icon">📋</span><span><strong style="color:var(--text)">20 questions</strong> — mix of multiple choice and numerical input (Calculation) or multiple choice (Programming).</span></div>
+      <div class="modal-rule"><span class="icon">📋</span><span><strong style="color:var(--text)">30 questions</strong> — mix of multiple choice and numerical input (Calculation) or multiple choice (Programming).</span></div>
       <div class="modal-rule"><span class="icon">🏆</span><span>Certificate awarded for <strong style="color:var(--gold)" id="modal-cert-threshold">80%+</strong> — that's <strong id="modal-cert-score">16/20</strong> correct answers.</span></div>
       <div class="modal-rule"><span class="icon">💡</span><span>No explanations during the exam — review answers at the end.</span></div>
     </div>
@@ -699,7 +699,7 @@ function updateModalCertInfo(subject,level){
   const lvl=LEVELS[subject].find(l=>l.n===level)||LEVELS[subject][0];
   const certThreshold=lvl.certThreshold;
   document.getElementById('modal-cert-threshold').textContent=certThreshold+'%+';
-  document.getElementById('modal-cert-score').textContent=`${Math.ceil(20*certThreshold/100)}/20`;
+  document.getElementById('modal-cert-score').textContent=`${Math.ceil(30*certThreshold/100)}/30`;
 }
 
 function selectModalLevel(n,btn){
@@ -716,7 +716,7 @@ function closeExamModal(){
 async function startExam(){
   examSubject=examModalSubject;
   closeExamModal();
-  const total=20;
+  const total=30;
   // Pre-fill arrays with nulls so index access works from the start
   examQuestions=new Array(total).fill(null);
   examAnswers=new Array(total).fill(null);
@@ -763,17 +763,16 @@ ${hint} No explanation needed.`;
         if(!q.question||!q.type)throw new Error('missing fields');
         if(q.type==='mcq'&&(!Array.isArray(q.options)||q.options.length<2))throw new Error('missing options');
         examQuestions[i]=q;
-        // Re-render current question — this enables Next as soon as Q[currentQ+1] loads
         renderQDots(total);
-        if(examCurrentQ===i||examCurrentQ===i-1)renderExamQuestion();
-        else renderQDots(total);
+        // Always re-render current question so Next button updates immediately
+        renderExamQuestion();
         return;
       }catch(e){
         if(attempt===0){await new Promise(r=>setTimeout(r,500));continue;}
         // Fallback placeholder question
         examQuestions[i]={question:`Question ${i+1}: Could not load. Please skip.`,type:'mcq',options:['Skip','Skip','Skip','Skip'],correctIndex:0};
         renderQDots(total);
-        if(examCurrentQ===i||examCurrentQ===i-1)renderExamQuestion();
+        renderExamQuestion();
       }
     }
   };
@@ -802,12 +801,11 @@ function renderQDots(total){
 function renderExamQuestion(){
   const q=examQuestions[examCurrentQ];
   if(!q){
-    // Question not loaded yet — show spinner and check again shortly
+    // Question not loaded yet — show spinner; parallel loader will re-render when ready
     document.getElementById('exam-body').innerHTML=`<div class="exam-question-card"><div class="ai-loading"><div class="spinner"></div> Loading question ${examCurrentQ+1}… please wait.</div></div>`;
-    setTimeout(renderExamQuestion, 800);
     return;
   }
-  const examTotal=20;
+  const examTotal=30;
   const loadedCount=examQuestions.filter(q=>q!==null).length;
   const isLastQ=examCurrentQ===examTotal-1;
   const nextIsLoaded=examCurrentQ+1<examTotal && examQuestions[examCurrentQ+1]!==null;
@@ -881,7 +879,7 @@ function goToExamQuestion(idx){
 function confirmSubmitExam(){
   const unanswered=examAnswers.filter(a=>a===null).length;
   const loaded=examQuestions.filter(q=>q!==null).length;
-  const total=20;
+  const total=30;
   if(loaded<total){
     if(!confirm(`Only ${loaded} of ${total} questions have loaded. Submit now?`))return;
   } else if(unanswered>0){
@@ -918,7 +916,7 @@ function endExam(abandoned){
     }
   });
 
-  const total=loadedQs.length||20;
+  const total=loadedQs.length||30;
   const pct=Math.round((correct/total)*100);
   const level=LEVELS[examSubject].find(l=>l.n===examLevel);
   const certThreshold=level.certThreshold;
