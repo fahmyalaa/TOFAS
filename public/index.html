@@ -730,14 +730,11 @@ async function startExam(){
   const level=LEVELS[examSubject].find(l=>l.n===examLevel);
   const isCalc=examSubject==='math';
 
-  const system=`You are a TOFAS exam question generator. Output ONLY a raw JSON object. No markdown, no extra text.
-${isCalc
-  ?'Alternate between:
-{"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0}
-and
-{"question":"...","type":"numerical","correctAnswer":"42"}'
-  :'{"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0}'}
-All values plain strings. Start with { end with }. No explanation field.`;
+  const mcqFormat = '{"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0}';
+  const numFormat = '{"question":"...","type":"numerical","correctAnswer":"42"}';
+  const system = 'You are a TOFAS exam question generator. Output ONLY a raw JSON object. No markdown, no extra text. '
+    + (isCalc ? 'Use mcq format: '+mcqFormat+' OR numerical format: '+numFormat : 'Use mcq format: '+mcqFormat)
+    + ' All values plain strings. Start with { end with }. No explanation field.';
 
   const hints=[
     'Single-step calculation.','Word problem scenario.','Real-life context.',
