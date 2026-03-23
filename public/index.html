@@ -683,15 +683,12 @@ function updateProgress(){
 // ── EXAM MODE ──
 function openExamModal(subject){
   examModalSubject=subject;
-  examLevel=1; // reset to level 1
+  examLevel=1;
   updateModalCertInfo(subject,1);
-
-  // Build level selector in modal
   const sel=document.getElementById('modal-level-selector');
   sel.innerHTML=LEVELS[subject].map((l,i)=>
     `<button class="lvl-btn ${i===0?'active':''}" style="font-size:.78rem;padding:6px 12px;" onclick="selectModalLevel(${l.n},this)">${l.label} · ${l.title}</button>`
   ).join('');
-  examLevel=1;
   document.getElementById('exam-modal').classList.remove('hidden');
 }
 
@@ -716,44 +713,60 @@ function closeExamModal(){
 async function startExam(){
   examSubject=examModalSubject;
   closeExamModal();
-  const total=30;
-  // Pre-fill arrays with nulls so index access works from the start
-  examQuestions=new Array(total).fill(null);
-  examAnswers=new Array(total).fill(null);
+  const TOTAL=30;
+  const CONCURRENCY=5; // max parallel requests at a time — prevents API overload
+
+  examQuestions=new Array(TOTAL).fill(null);
+  examAnswers=new Array(TOTAL).fill(null);
   examCurrentQ=0;
   showView('exam',null);
-  document.getElementById('exam-title').textContent=
-    (examSubject==='math'?'🧮 Calculation':'💻 Programming')+' · Level '+examLevel+' · Exam Simulation';
 
-  // Start timer immediately
+  document.getElementById('exam-title').textContent=
+    (examSubject==='math'?'🧮 Calculation':'💻 Programming')+
+    ' · Level '+examLevel+' · Exam Simulation';
+
   startExamTimer();
 
   const level=LEVELS[examSubject].find(l=>l.n===examLevel);
   const isCalc=examSubject==='math';
 
-  const system=`You are a TOFAS exam question generator. Output ONLY a raw JSON object — no markdown, no explanation, nothing before or after.
-${isCalc?'For mcq: {"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0}\nFor numerical: {"question":"...","type":"numerical","correctAnswer":"42"}':'{"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0}'}
-All values must be plain strings. No explanations. Start with { end with }.`;
+  const system=`You are a TOFAS exam question generator. Output ONLY a raw JSON object. No markdown, no extra text.
+${isCalc
+  ?'Alternate between:
+{"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0}
+and
+{"question":"...","type":"numerical","correctAnswer":"42"}'
+  :'{"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0}'}
+All values plain strings. Start with { end with }. No explanation field.`;
 
-  const hints=['Use different numbers.','Try a word problem.','Use a real-life scenario.','Make it multi-step.','Use large numbers.','Focus on a different sub-topic.','Vary the structure completely.','Use a tricky but fair question.','Use a scenario involving students.','Try a different operation.'];
+  const hints=[
+    'Single-step calculation.','Word problem scenario.','Real-life context.',
+    'Multi-step calculation.','Use large numbers.','Different sub-topic.',
+    'Vary the structure.','Slightly tricky but fair.','School scenario.',
+    'Different operation type.'
+  ];
 
-  // Show loading state for Q1
-  renderQDots(total);
+  // Show initial loading screen
+  renderQDots(TOTAL);
   document.getElementById('exam-body').innerHTML=`
     <div class="exam-question-card">
-      <div class="ai-loading"><div class="spinner"></div> Loading question 1… Please wait a moment.</div>
+      <div class="ai-loading"><div class="spinner"></div>
+        Loading exam questions… First question will appear shortly.
+      </div>
     </div>`;
 
-  // Load ALL questions in parallel — each renders as soon as it arrives
+  // Load one question — returns the question object or null on failure
   const loadOne = async (i) => {
     const seed=Math.floor(Math.random()*99999);
     const hint=hints[i%hints.length];
-    const useNumerical=isCalc&&(i%2===0); // alternate numerical/mcq for calc
+    const useNumerical=isCalc&&(i%2!==0); // odd questions = numerical for calc
 
-    const prompt=`[Seed:${seed}] Exam question ${i+1} of ${total}. Generate one UNIQUE TOFAS ${examSubject==='math'?'Calculation':'Programming'} Level ${examLevel} question.
+    const prompt=`[Seed:${seed}] TOFAS ${examSubject==='math'?'Calculation':'Programming'} Level ${examLevel}. Question ${i+1} of ${TOTAL}.
 Topics: ${level.topics}.
-${isCalc?(useNumerical?'Use type "numerical". correctAnswer is the numeric result as a string.':'Use type "mcq" with exactly 4 options.'):'Use type "mcq" with exactly 4 options. Short code snippet if relevant.'}
-${hint} No explanation needed.`;
+${isCalc
+  ?(useNumerical?'Use type "numerical". correctAnswer is the numeric answer as a plain string.':'Use type "mcq" with exactly 4 distinct options.')
+  :'Use type "mcq" with exactly 4 distinct options. Include a short code snippet where relevant.'}
+${hint} Make it unique.`;
 
     for(let attempt=0;attempt<2;attempt++){
       try{
@@ -761,35 +774,76 @@ ${hint} No explanation needed.`;
         const clean=raw.replace(/^```[\w]*\s*/,'').replace(/```\s*$/,'').trim();
         const q=JSON.parse(clean);
         if(!q.question||!q.type)throw new Error('missing fields');
-        if(q.type==='mcq'&&(!Array.isArray(q.options)||q.options.length<2))throw new Error('missing options');
-        examQuestions[i]=q;
-        renderQDots(total);
-        // Always re-render current question so Next button updates immediately
-        renderExamQuestion();
-        return;
+        if(q.type==='mcq'&&(!Array.isArray(q.options)||q.options.length<2))throw new Error('bad options');
+        return q;
       }catch(e){
-        if(attempt===0){await new Promise(r=>setTimeout(r,500));continue;}
-        // Fallback placeholder question
-        examQuestions[i]={question:`Question ${i+1}: Could not load. Please skip.`,type:'mcq',options:['Skip','Skip','Skip','Skip'],correctIndex:0};
-        renderQDots(total);
-        renderExamQuestion();
+        if(attempt===0){await new Promise(r=>setTimeout(r,600));continue;}
+        console.warn(`Q${i+1} failed:`,e.message);
+        return null; // will show as skipped
       }
     }
+    return null;
   };
 
-  // Fire all 20 requests at once
-  await Promise.all(Array.from({length:total},(_,i)=>loadOne(i)));
+  // Run with limited concurrency — process in batches of CONCURRENCY
+  let firstShown=false;
+  for(let batch=0;batch<TOTAL;batch+=CONCURRENCY){
+    const batchIndices=[];
+    for(let j=batch;j<Math.min(batch+CONCURRENCY,TOTAL);j++) batchIndices.push(j);
 
-  // Final render update
-  renderQDots(total);
+    // Fire this batch in parallel
+    const results=await Promise.all(batchIndices.map(i=>loadOne(i)));
+
+    // Store results and update UI
+    results.forEach((q,k)=>{
+      const i=batchIndices[k];
+      examQuestions[i]=q; // null if failed
+    });
+
+    renderQDots(TOTAL);
+
+    // Show first question as soon as batch 0 completes
+    if(!firstShown){
+      firstShown=true;
+      renderExamQuestion();
+    } else if(examCurrentQ>=batch&&examCurrentQ<batch+CONCURRENCY){
+      // Re-render if current question was in this batch
+      renderExamQuestion();
+    } else {
+      // Just update the Next button if next question just loaded
+      updateNextButton();
+    }
+  }
+
+  // All done — final render
+  renderQDots(TOTAL);
   renderExamQuestion();
 }
 
+// Update only the Next button without re-rendering the whole question (prevents input loss)
+function updateNextButton(){
+  const navDiv=document.querySelector('.exam-nav');
+  if(!navDiv)return;
+  const TOTAL=30;
+  const isLastQ=examCurrentQ===TOTAL-1;
+  const nextIsLoaded=examCurrentQ+1<TOTAL && examQuestions[examCurrentQ+1]!==null;
+  const lastBtn=navDiv.lastElementChild;
+  if(!lastBtn)return;
+
+  if(isLastQ){
+    lastBtn.outerHTML=`<button class="btn-primary" style="background:linear-gradient(135deg,var(--green),var(--accent2));" onclick="confirmSubmitExam()">Submit Exam ✓</button>`;
+  } else if(nextIsLoaded){
+    lastBtn.outerHTML=`<button class="btn-primary" onclick="goToExamQuestion(${examCurrentQ+1})">Next →</button>`;
+  }
+  // If still loading, leave disabled button as-is
+}
 
 function renderQDots(total){
-  total=total||examQuestions.length||20;
-  document.getElementById('q-dots').innerHTML=Array.from({length:total},(_,i)=>{
-    const loaded=examQuestions[i]!==null&&examQuestions[i]!==undefined;
+  total=total||30;
+  const el=document.getElementById('q-dots');
+  if(!el)return;
+  el.innerHTML=Array.from({length:total},(_,i)=>{
+    const loaded=examQuestions[i]!==null;
     const ans=examAnswers[i];
     const cls=i===examCurrentQ?'current':ans!==null?'answered':'';
     const dim=!loaded?'opacity:.35;cursor:default;':'';
@@ -799,21 +853,26 @@ function renderQDots(total){
 }
 
 function renderExamQuestion(){
+  const TOTAL=30;
   const q=examQuestions[examCurrentQ];
   if(!q){
-    // Question not loaded yet — show spinner; parallel loader will re-render when ready
-    document.getElementById('exam-body').innerHTML=`<div class="exam-question-card"><div class="ai-loading"><div class="spinner"></div> Loading question ${examCurrentQ+1}… please wait.</div></div>`;
+    document.getElementById('exam-body').innerHTML=`
+      <div class="exam-question-card">
+        <div class="ai-loading"><div class="spinner"></div> Loading question ${examCurrentQ+1}… please wait.</div>
+      </div>`;
     return;
   }
-  const examTotal=30;
+
   const loadedCount=examQuestions.filter(q=>q!==null).length;
-  const isLastQ=examCurrentQ===examTotal-1;
-  const nextIsLoaded=examCurrentQ+1<examTotal && examQuestions[examCurrentQ+1]!==null;
+  const isLastQ=examCurrentQ===TOTAL-1;
+  const nextIsLoaded=examCurrentQ+1<TOTAL && examQuestions[examCurrentQ+1]!==null;
+
   document.getElementById('exam-progress').textContent=
-    loadedCount<examTotal
-      ? `Question ${examCurrentQ+1} of ${examTotal} (${loadedCount} loaded)`
-      : `Question ${examCurrentQ+1} of ${examTotal}`;
-  renderQDots(examTotal);
+    loadedCount<TOTAL
+      ? `Question ${examCurrentQ+1} of ${TOTAL} (${loadedCount} loaded)`
+      : `Question ${examCurrentQ+1} of ${TOTAL}`;
+
+  renderQDots(TOTAL);
 
   const savedAnswer=examAnswers[examCurrentQ];
   const isMcq=q.type!=='numerical';
@@ -826,20 +885,23 @@ function renderExamQuestion(){
       </button>`).join('')}</div>`;
   } else {
     inputHtml=`<div class="num-input-wrap">
-      <input type="number" step="any" class="num-input" id="exam-num-ans" placeholder="Enter your answer" value="${savedAnswer!==null?savedAnswer:''}" oninput="saveExamNumerical(this.value)">
+      <input type="number" step="any" class="num-input" id="exam-num-ans"
+        placeholder="Enter your answer"
+        value="${savedAnswer!==null&&savedAnswer!==undefined?escHtml(String(savedAnswer)):''}"
+        oninput="saveExamNumerical(this.value)">
     </div>`;
   }
 
-  const nextBtn = isLastQ
-    ? `<button class="btn-primary" style="background:linear-gradient(135deg,var(--green),var(--accent2));" onclick="confirmSubmitExam()">Submit Exam ✓</button>`
-    : nextIsLoaded
-      ? `<button class="btn-primary" onclick="goToExamQuestion(${examCurrentQ+1})">Next →</button>`
-      : `<button class="btn-primary" disabled style="opacity:.5;">Loading next… ⏳</button>`;
+  const nextBtn=isLastQ
+    ?`<button class="btn-primary" style="background:linear-gradient(135deg,var(--green),var(--accent2));" onclick="confirmSubmitExam()">Submit Exam ✓</button>`
+    :nextIsLoaded
+      ?`<button class="btn-primary" onclick="goToExamQuestion(${examCurrentQ+1})">Next →</button>`
+      :`<button class="btn-primary" disabled style="opacity:.5;">Loading next… ⏳</button>`;
 
   document.getElementById('exam-body').innerHTML=`
     <div class="exam-question-card">
       <div class="exam-no-calc">🚫 No calculator — mental math only</div>
-      <div class="exam-q-num">Question ${examCurrentQ+1} of ${examTotal}</div>
+      <div class="exam-q-num">Question ${examCurrentQ+1} of ${TOTAL}</div>
       <div class="exam-q-text">${renderText(q.question)}</div>
       ${inputHtml}
     </div>
@@ -858,18 +920,16 @@ function renderExamQuestion(){
 function selectExamOption(i){
   examAnswers[examCurrentQ]=i;
   document.querySelectorAll('#exam-options .option').forEach((o,idx)=>o.classList.toggle('selected',idx===i));
-  renderQDots();
+  renderQDots(30);
 }
 
 function saveExamNumerical(val){
   examAnswers[examCurrentQ]=val===''?null:val;
-  renderQDots();
+  renderQDots(30);
 }
 
 function goToExamQuestion(idx){
-  const total=examQuestions.length||20;
-  if(idx<0||idx>=total)return;
-  // Save current numerical answer before navigating
+  if(idx<0||idx>=30)return;
   const numInp=document.getElementById('exam-num-ans');
   if(numInp&&numInp.value!=='')examAnswers[examCurrentQ]=numInp.value;
   examCurrentQ=idx;
@@ -877,13 +937,12 @@ function goToExamQuestion(idx){
 }
 
 function confirmSubmitExam(){
-  const unanswered=examAnswers.filter(a=>a===null).length;
   const loaded=examQuestions.filter(q=>q!==null).length;
-  const total=30;
-  if(loaded<total){
-    if(!confirm(`Only ${loaded} of ${total} questions have loaded. Submit now?`))return;
+  const unanswered=examAnswers.filter(a=>a===null).length;
+  if(loaded<30){
+    if(!confirm(`Only ${loaded} of 30 questions loaded. Submit now?`))return;
   } else if(unanswered>0){
-    if(!confirm(`You have ${unanswered} unanswered question${unanswered>1?'s':''}. Submit anyway?`))return;
+    if(!confirm(`${unanswered} question${unanswered>1?'s':''} unanswered. Submit anyway?`))return;
   }
   submitExam();
 }
@@ -892,21 +951,18 @@ function confirmExitExam(){
   if(confirm('Exit the exam? Your progress will be lost.'))endExam(true);
 }
 
-function submitExam(){
-  endExam(false);
-}
+function submitExam(){ endExam(false); }
 
 function endExam(abandoned){
   clearInterval(examTimerInterval);
   if(abandoned){showView('home',0);return;}
 
-  // Calculate score
   let correct=0;
   const loadedQs=examQuestions.filter(q=>q!==null);
   examQuestions.forEach((q,i)=>{
-    if(!q)return; // skip unloaded slots
+    if(!q)return;
     const ans=examAnswers[i];
-    if(ans===null)return;
+    if(ans===null||ans===undefined)return;
     if(q.type==='numerical'){
       const userVal=parseFloat(String(ans));
       const correctVal=parseFloat(String(q.correctAnswer||''));
@@ -924,7 +980,6 @@ function endExam(abandoned){
   const timeTaken=2400-examSecondsLeft;
   const mins=Math.floor(timeTaken/60);
   const secs=timeTaken%60;
-
   const pctCss=`${pct*3.6}deg`;
 
   document.getElementById('exam-body').innerHTML=`
@@ -936,8 +991,7 @@ function endExam(abandoned){
       <div class="result-sub">
         ${passed
           ?`You passed Level ${examLevel} with ${pct}% — you qualify for a TOFAS certificate!`
-          :`You scored ${pct}%. You need ${certThreshold}% to earn a certificate. Keep practicing and try again!`
-        }
+          :`You scored ${pct}%. You need ${certThreshold}% to earn a certificate. Keep practicing!`}
       </div>
       <div class="result-cert ${passed?'gold':'red'}">
         ${passed?`🏆 Certificate Eligible (${certThreshold}%+ required)`:`❌ Not yet (${certThreshold}%+ required)`}
@@ -949,7 +1003,9 @@ function endExam(abandoned){
         <div class="breakdown-row"><span>Percentage</span><span>${pct}%</span></div>
         <div class="breakdown-row"><span>Time taken</span><span>${mins}m ${secs}s of 40m</span></div>
         <div class="breakdown-row"><span>Certificate threshold</span><span>${certThreshold}%</span></div>
-        <div class="breakdown-row"><span>Result</span><span style="color:${passed?'var(--green)':'var(--red)'}">${passed?'PASS ✅':'NEEDS IMPROVEMENT ❌'}</span></div>
+        <div class="breakdown-row"><span>Result</span>
+          <span style="color:${passed?'var(--green)':'var(--red)'}">${passed?'PASS ✅':'NEEDS IMPROVEMENT ❌'}</span>
+        </div>
       </div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
         <button class="btn-primary" onclick="openExamModal('${examSubject}')">Try Again</button>
