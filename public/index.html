@@ -46,9 +46,9 @@
   .stat{text-align:center;}.stat-num{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--accent2);}.stat-label{font-size:.78rem;color:var(--muted);}
 
   .subject-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:920px;margin:0 auto;padding:0 32px 20px;}
-  .subject-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:26px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+  .subject-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:26px;cursor:default;transition:all .25s;position:relative;overflow:hidden;}
   .subject-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 40px rgba(59,130,246,.15);}
-  .subject-card::before{content:'';position:absolute;top:0;right:0;width:180px;height:180px;border-radius:50%;opacity:.07;transform:translate(40%,-40%);}
+  .subject-card::before{content:'';position:absolute;top:0;right:0;width:180px;height:180px;border-radius:50%;opacity:.07;transform:translate(40%,-40%);pointer-events:none;}
   .subject-card.math::before{background:var(--gold);}.subject-card.prog::before{background:var(--accent2);}
   .card-icon{font-size:2rem;margin-bottom:14px;}
   .card-title{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:6px;}
@@ -56,9 +56,9 @@
   .cert-info{font-size:.78rem;padding:6px 12px;border-radius:8px;margin-bottom:16px;display:inline-block;}
   .cert-info.gold{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.2);}
   .cert-info.green{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
-  .level-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px;}
+  .level-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px;position:relative;z-index:1;}
   .level-pill{background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:3px 9px;font-size:.72rem;color:var(--muted);}
-  .card-btns{display:flex;gap:10px;}
+  .card-btns{display:flex;gap:10px;position:relative;z-index:2;}
   .start-btn{flex:1;padding:11px;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;}
   .exam-btn{flex:1;padding:11px;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;background:var(--surface2);border:1px solid var(--border);color:var(--text);}
   .exam-btn:hover{border-color:var(--gold);color:var(--gold);}
