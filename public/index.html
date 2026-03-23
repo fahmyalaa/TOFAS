@@ -723,9 +723,15 @@ function renderQDots(total){
 function renderExamQuestion(){
   const q=examQuestions[examCurrentQ];
   if(!q)return; // guard: question not loaded yet
-  const total=examQuestions.length;
-  document.getElementById('exam-progress').textContent=`Question ${examCurrentQ+1} of ${total}`;
-  renderQDots();
+  const examTotal=20; // fixed total throughout exam
+  const loadedTotal=examQuestions.length;
+  const isLastQ=examCurrentQ===examTotal-1;
+  const nextIsLoaded=examCurrentQ+1<loadedTotal;
+  document.getElementById('exam-progress').textContent=
+    loadedTotal<examTotal
+      ? `Question ${examCurrentQ+1} of ${examTotal} (${examTotal-loadedTotal} still loading…)`
+      : `Question ${examCurrentQ+1} of ${examTotal}`;
+  renderQDots(examTotal);
 
   const savedAnswer=examAnswers[examCurrentQ];
   const isMcq=q.type!=='numerical';
@@ -742,20 +748,23 @@ function renderExamQuestion(){
     </div>`;
   }
 
+  const nextBtn = isLastQ
+    ? `<button class="btn-primary" style="background:linear-gradient(135deg,var(--green),var(--accent2));" onclick="confirmSubmitExam()">Submit Exam ✓</button>`
+    : nextIsLoaded
+      ? `<button class="btn-primary" onclick="goToExamQuestion(${examCurrentQ+1})">Next →</button>`
+      : `<button class="btn-primary" disabled style="opacity:.5;">Loading next… ⏳</button>`;
+
   document.getElementById('exam-body').innerHTML=`
     <div class="exam-question-card">
       <div class="exam-no-calc">🚫 No calculator — mental math only</div>
-      <div class="exam-q-num">Question ${examCurrentQ+1} of ${total}</div>
+      <div class="exam-q-num">Question ${examCurrentQ+1} of ${examTotal}</div>
       <div class="exam-q-text">${renderText(q.question)}</div>
       ${inputHtml}
     </div>
     <div class="exam-nav">
       <button class="btn-secondary" onclick="goToExamQuestion(${examCurrentQ-1})" ${examCurrentQ===0?'disabled':''}>← Previous</button>
-      <div style="color:var(--muted);font-size:.82rem;">${examAnswers.filter(a=>a!==null).length}/${total} answered</div>
-      ${examCurrentQ<total-1
-        ?`<button class="btn-primary" onclick="goToExamQuestion(${examCurrentQ+1})">Next →</button>`
-        :`<button class="btn-primary" style="background:linear-gradient(135deg,var(--green),var(--accent2));" onclick="confirmSubmitExam()">Submit Exam ✓</button>`
-      }
+      <div style="color:var(--muted);font-size:.82rem;">${examAnswers.filter(a=>a!==null).length} answered</div>
+      ${nextBtn}
     </div>`;
 
   if(!isMcq){
