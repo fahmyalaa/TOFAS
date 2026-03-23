@@ -354,11 +354,11 @@
       <div class="cert-info gold">🏆 Certificate awarded for 80% or higher</div>
       <div class="level-pills">
         <span class="level-pill">L1 · Add/Subtract/Multiply</span>
-        <span class="level-pill">L2 · Divide/Decimals/Fractions</span>
-        <span class="level-pill">L3 · Fractions & Decimal Ops</span>
-        <span class="level-pill">L4 · Algebra & Negatives</span>
-        <span class="level-pill">L5 · Equations & Systems</span>
-        <span class="level-pill">L6 · Quadratics & Polynomials</span>
+        <span class="level-pill">L1-L2 · + Divide/Decimals/Fractions</span>
+        <span class="level-pill">L1-L3 · + Fractions & Decimal Ops</span>
+        <span class="level-pill">L1-L4 · + Algebra & Negatives</span>
+        <span class="level-pill">L1-L5 · + Equations & Systems</span>
+        <span class="level-pill">L1-L6 · + Quadratics & Polynomials</span>
       </div>
       <div class="card-btns">
         <button class="start-btn math" onclick="openPractice('math')">Practice Mode</button>
@@ -373,11 +373,11 @@
       <div class="cert-info green">🏆 Certificate awarded for 60% or higher</div>
       <div class="level-pills">
         <span class="level-pill">L1 · Sequential / Output</span>
-        <span class="level-pill">L2 · Loops / Arrays</span>
-        <span class="level-pill">L3 · Functions / Variables</span>
-        <span class="level-pill">L4 · Lists / Switch / While</span>
-        <span class="level-pill">L5 · Advanced Arrays</span>
-        <span class="level-pill">L6 · Classes / Timers</span>
+        <span class="level-pill">L1-L2 · + Loops / Arrays</span>
+        <span class="level-pill">L1-L3 · + Functions / Variables</span>
+        <span class="level-pill">L1-L4 · + Lists / Switch / While</span>
+        <span class="level-pill">L1-L5 · + Advanced Arrays</span>
+        <span class="level-pill">L1-L6 · + Classes / Timers</span>
       </div>
       <div class="card-btns">
         <button class="start-btn prog" onclick="openPractice('prog')">Practice Mode</button>
@@ -503,6 +503,14 @@ const LEVELS = {
   ]
 };
 
+// ── Cumulative Topics Helper ──
+// TOFAS levels are cumulative — Level 5 includes all topics from L1 to L5
+function getCumulativeTopics(subject, levelN){
+  const levels = LEVELS[subject];
+  const upTo = levels.filter(l => l.n <= levelN);
+  return upTo.map((l,i) => 'L'+l.n+': '+l.topics).join(' | ');
+}
+
 // ── State ──
 let currentSubject='math', currentLevel=1, selectedOption=null;
 let answered=false, sessionCorrect=0, sessionTotal=0, questionCount=0;
@@ -532,8 +540,10 @@ function openPractice(subject){
 }
 
 function buildLevelSelector(){
-  document.getElementById('level-selector').innerHTML=LEVELS[currentSubject].map((l,i)=>
-    `<button class="lvl-btn ${i===0?'active':''}" onclick="setLevel(${l.n},this)">${l.label} · ${l.title}</button>`).join('');
+  document.getElementById('level-selector').innerHTML=LEVELS[currentSubject].map((l,i)=>{
+    const rangeLabel = l.n===1 ? l.label : 'L1-'+l.label;
+    return `<button class="lvl-btn ${i===0?'active':''}" onclick="setLevel(${l.n},this)">${rangeLabel} · ${l.title}</button>`;
+  }).join('');
 }
 
 function setLevel(n,btn){
@@ -578,8 +588,10 @@ async function generateQuestion(){
 ${useNumerical?'Format: {"question":"...","type":"numerical","correctAnswer":"42","explanation":"..."}':'Format: {"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0,"explanation":"..."}'}
 Rules: all values plain strings. Start with { end with }. NEVER use a calculator hint in questions. Questions must be solvable by mental math.`;
 
+  const allTopics = getCumulativeTopics(currentSubject, currentLevel);
   const prompt=`[Seed:${seed}] Generate one UNIQUE TOFAS ${currentSubject==='math'?'Calculation':'Programming'} Level ${currentLevel} question.
-Topics: ${level.topics}.
+This level is CUMULATIVE — questions can cover any topic from Level 1 up to Level ${currentLevel}.
+All topics in scope: ${allTopics}
 ${isCalc?(useNumerical?'Use numerical input type.':'Use mcq type with 4 options.'):'Use mcq type with 4 options. Include a short code snippet where appropriate.'}
 Difficulty: match official TOFAS Level ${currentLevel}. ${hint}${avoid}`;
 
@@ -686,9 +698,10 @@ function openExamModal(subject){
   examLevel=1;
   updateModalCertInfo(subject,1);
   const sel=document.getElementById('modal-level-selector');
-  sel.innerHTML=LEVELS[subject].map((l,i)=>
-    `<button class="lvl-btn ${i===0?'active':''}" style="font-size:.78rem;padding:6px 12px;" onclick="selectModalLevel(${l.n},this)">${l.label} · ${l.title}</button>`
-  ).join('');
+  sel.innerHTML=LEVELS[subject].map((l,i)=>{
+    const rangeLabel = l.n===1 ? l.label : 'L1-'+l.label;
+    return `<button class="lvl-btn ${i===0?'active':''}" style="font-size:.78rem;padding:6px 12px;" onclick="selectModalLevel(${l.n},this)">${rangeLabel} · ${l.title}</button>`;
+  }).join('');
   document.getElementById('exam-modal').classList.remove('hidden');
 }
 
@@ -758,8 +771,10 @@ async function startExam(){
     const hint=hints[i%hints.length];
     const useNumerical=isCalc&&(i%2!==0); // odd questions = numerical for calc
 
+    const allTopics = getCumulativeTopics(examSubject, examLevel);
     const prompt=`[Seed:${seed}] TOFAS ${examSubject==='math'?'Calculation':'Programming'} Level ${examLevel}. Question ${i+1} of ${TOTAL}.
-Topics: ${level.topics}.
+This level is CUMULATIVE — questions can cover any topic from Level 1 up to Level ${examLevel}.
+All topics in scope: ${allTopics}
 ${isCalc
   ?(useNumerical?'Use type "numerical". correctAnswer is the numeric answer as a plain string.':'Use type "mcq" with exactly 4 distinct options.')
   :'Use type "mcq" with exactly 4 distinct options. Include a short code snippet where relevant.'}
