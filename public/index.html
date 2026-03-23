@@ -10,198 +10,424 @@
     --bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;
     --accent:#3b82f6;--accent2:#06b6d4;--gold:#f59e0b;--green:#10b981;
     --red:#ef4444;--text:#e2e8f0;--muted:#64748b;--card-bg:#131c2e;
+    --orange:#f97316;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-  header{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);background:rgba(10,14,26,.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;}
+
+  /* ── Header ── */
+  header{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);background:rgba(10,14,26,.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:200;}
   .logo{display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.02em;}
   .logo-badge{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:grid;place-items:center;font-size:.85rem;font-weight:800;}
   .logo span{color:var(--accent2);}
   nav{display:flex;gap:6px;}
-  nav button{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.9rem;padding:7px 14px;border-radius:8px;cursor:pointer;transition:all .2s;}
+  nav button{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.88rem;padding:7px 13px;border-radius:8px;cursor:pointer;transition:all .2s;}
   nav button:hover,nav button.active{background:var(--surface2);color:var(--text);}
   nav button.active{color:var(--accent2);}
+
+  /* ── Views ── */
   .view{display:none;}.view.active{display:block;}
-  .hero{text-align:center;padding:80px 32px 40px;position:relative;}
-  .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(59,130,246,.15) 0%,transparent 70%);pointer-events:none;}
-  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:999px;padding:5px 14px;font-size:.8rem;color:var(--accent2);margin-bottom:24px;letter-spacing:.05em;text-transform:uppercase;}
-  .hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:18px;}
+
+  /* ── Home ── */
+  .hero{text-align:center;padding:70px 32px 36px;position:relative;}
+  .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(59,130,246,.13) 0%,transparent 70%);pointer-events:none;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:999px;padding:5px 14px;font-size:.78rem;color:var(--accent2);margin-bottom:20px;letter-spacing:.06em;text-transform:uppercase;}
+  .hero h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:16px;}
   .hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .hero p{color:var(--muted);font-size:1.05rem;max-width:520px;margin:0 auto 40px;line-height:1.7;}
-  .subject-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:900px;margin:0 auto;padding:0 32px 60px;}
-  .subject-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:28px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+  .hero p{color:var(--muted);font-size:1rem;max-width:500px;margin:0 auto 32px;line-height:1.7;}
+
+  /* No-calculator banner */
+  .no-calc-banner{display:flex;align-items:center;gap:12px;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);border-radius:14px;padding:14px 20px;max-width:620px;margin:0 auto 32px;text-align:left;}
+  .no-calc-banner .icon{font-size:1.6rem;flex-shrink:0;}
+  .no-calc-banner strong{color:var(--orange);font-size:.95rem;display:block;margin-bottom:3px;}
+  .no-calc-banner span{color:var(--muted);font-size:.85rem;line-height:1.5;}
+
+  .stats-bar{display:flex;justify-content:center;gap:40px;padding:20px 32px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:36px;flex-wrap:wrap;}
+  .stat{text-align:center;}.stat-num{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--accent2);}.stat-label{font-size:.78rem;color:var(--muted);}
+
+  .subject-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;max-width:920px;margin:0 auto;padding:0 32px 20px;}
+  .subject-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:26px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
   .subject-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 40px rgba(59,130,246,.15);}
   .subject-card::before{content:'';position:absolute;top:0;right:0;width:180px;height:180px;border-radius:50%;opacity:.07;transform:translate(40%,-40%);}
   .subject-card.math::before{background:var(--gold);}.subject-card.prog::before{background:var(--accent2);}
-  .card-icon{font-size:2.2rem;margin-bottom:16px;}
-  .card-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:8px;}
-  .card-desc{color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:20px;}
-  .level-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
-  .level-pill{background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:3px 10px;font-size:.75rem;color:var(--muted);}
-  .start-btn{width:100%;padding:12px;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;}
+  .card-icon{font-size:2rem;margin-bottom:14px;}
+  .card-title{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:6px;}
+  .card-desc{color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:16px;}
+  .cert-info{font-size:.78rem;padding:6px 12px;border-radius:8px;margin-bottom:16px;display:inline-block;}
+  .cert-info.gold{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.2);}
+  .cert-info.green{background:rgba(16,185,129,.1);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+  .level-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px;}
+  .level-pill{background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:3px 9px;font-size:.72rem;color:var(--muted);}
+  .card-btns{display:flex;gap:10px;}
+  .start-btn{flex:1;padding:11px;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;}
+  .exam-btn{flex:1;padding:11px;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;background:var(--surface2);border:1px solid var(--border);color:var(--text);}
+  .exam-btn:hover{border-color:var(--gold);color:var(--gold);}
   .math .start-btn{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#000;}
   .prog .start-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
   .start-btn:hover{opacity:.9;transform:scale(1.02);}
-  .stats-bar{display:flex;justify-content:center;gap:48px;padding:24px 32px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:40px;}
-  .stat{text-align:center;}.stat-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--accent2);}.stat-label{font-size:.8rem;color:var(--muted);}
-  #practice-view{max-width:780px;margin:0 auto;padding:40px 24px;}
-  .practice-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;}
-  .back-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+
+  /* ── Practice View ── */
+  #practice-view{max-width:800px;margin:0 auto;padding:36px 24px;}
+  .practice-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+  .back-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 14px;cursor:pointer;font-size:.88rem;transition:all .2s;flex-shrink:0;}
   .back-btn:hover{border-color:var(--accent);}
-  .practice-meta{flex:1;}.practice-meta h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;}.practice-meta p{color:var(--muted);font-size:.85rem;}
-  .level-selector{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;}
-  .lvl-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:8px 16px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+  .practice-meta{flex:1;}
+  .practice-meta h2{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;}
+  .practice-meta p{color:var(--muted);font-size:.82rem;}
+  .session-score{font-family:'Syne',sans-serif;font-size:.85rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:6px 14px;color:var(--accent2);}
+
+  .level-selector{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap;}
+  .lvl-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:10px;padding:7px 14px;cursor:pointer;font-size:.82rem;transition:all .2s;}
   .lvl-btn.active,.lvl-btn:hover{border-color:var(--accent);color:var(--accent2);background:rgba(59,130,246,.1);}
-  .question-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:32px;margin-bottom:20px;animation:fadeIn .35s ease;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  .q-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-  .q-badge{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:var(--accent2);border-radius:999px;padding:3px 12px;font-size:.75rem;font-weight:600;}
-  .q-num{color:var(--muted);font-size:.85rem;}
-  .q-text{font-size:1.1rem;line-height:1.7;margin-bottom:28px;font-weight:500;}
-  .q-text code{background:var(--surface2);border-radius:6px;padding:2px 8px;font-family:'Courier New',monospace;font-size:.95rem;color:var(--accent2);}
-  .options{display:grid;gap:10px;}
-  .option{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;font-size:.95rem;text-align:left;width:100%;color:var(--text);}
+
+  /* No-calc reminder in practice */
+  .practice-reminder{display:flex;align-items:center;gap:8px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:10px 14px;margin-bottom:20px;font-size:.82rem;color:var(--orange);}
+
+  .question-card{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:30px;margin-bottom:20px;animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .q-meta{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+  .q-badge{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:var(--accent2);border-radius:999px;padding:3px 12px;font-size:.73rem;font-weight:600;}
+  .q-num{color:var(--muted);font-size:.82rem;}
+  .q-text{font-size:1.08rem;line-height:1.75;margin-bottom:26px;font-weight:500;}
+  .q-text code{background:var(--surface2);border-radius:6px;padding:2px 8px;font-family:'Courier New',monospace;font-size:.93rem;color:var(--accent2);}
+  .options{display:grid;gap:9px;}
+  .option{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:13px 17px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:11px;font-size:.93rem;text-align:left;width:100%;color:var(--text);}
   .option.locked{pointer-events:none;}
   .option:hover:not(.locked){border-color:var(--accent);background:rgba(59,130,246,.08);}
   .option.selected{border-color:var(--accent);background:rgba(59,130,246,.12);}
   .option.correct{border-color:var(--green)!important;background:rgba(16,185,129,.1)!important;color:var(--green)!important;}
   .option.wrong{border-color:var(--red)!important;background:rgba(239,68,68,.1)!important;color:var(--red)!important;}
-  .opt-letter{width:28px;height:28px;background:var(--surface);border-radius:8px;display:grid;place-items:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;flex-shrink:0;}
+  .opt-letter{width:28px;height:28px;background:var(--surface);border-radius:7px;display:grid;place-items:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;flex-shrink:0;}
   .num-input-wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
-  .num-input{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--text);font-size:1.1rem;font-family:'DM Sans',sans-serif;width:160px;transition:border-color .2s;}
+  .num-input{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:11px 15px;color:var(--text);font-size:1.1rem;font-family:'DM Sans',sans-serif;width:160px;transition:border-color .2s;}
   .num-input:focus{outline:none;border-color:var(--accent);}.num-input:disabled{opacity:.7;}
-  .action-row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;}
-  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:12px;padding:12px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .2s;}
+  .action-row{display:flex;gap:11px;margin-top:18px;flex-wrap:wrap;}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#fff;border-radius:12px;padding:11px 22px;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s;}
   .btn-primary:hover:not(:disabled){opacity:.9;transform:scale(1.02);}.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-  .btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px 24px;font-family:'Syne',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s;}
+  .btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:11px 22px;font-family:'Syne',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;transition:all .2s;}
   .btn-secondary:hover{border-color:var(--accent);}
-  .explanation{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:14px;padding:18px 20px;margin-top:16px;font-size:.92rem;line-height:1.7;animation:fadeIn .3s ease;}
+  .explanation{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:14px;padding:16px 18px;margin-top:14px;font-size:.9rem;line-height:1.7;animation:fadeIn .3s ease;}
   .explanation.wrong-exp{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.2);}
-  .exp-title{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;font-size:1rem;}
-  .ai-loading{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.9rem;padding:20px 0;}
+  .exp-title{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:6px;font-size:.95rem;}
+  .ai-loading{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.88rem;padding:20px 0;}
   .spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent2);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .progress-bar-wrap{background:var(--surface2);border-radius:999px;height:6px;margin-bottom:28px;overflow:hidden;}
+  .progress-bar-wrap{background:var(--surface2);border-radius:999px;height:5px;margin-bottom:24px;overflow:hidden;}
   .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width .4s ease;}
-  #chat-view{max-width:720px;margin:0 auto;padding:40px 24px;}
-  .chat-header{margin-bottom:24px;}.chat-header h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:6px;}.chat-header p{color:var(--muted);font-size:.9rem;}
-  .chat-messages{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:20px;min-height:340px;max-height:460px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;margin-bottom:16px;scroll-behavior:smooth;}
+
+  /* ── EXAM MODE ── */
+  #exam-view{max-width:860px;margin:0 auto;padding:0;}
+
+  .exam-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;position:sticky;top:65px;z-index:100;}
+  .exam-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;}
+  .exam-timer{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--accent2);min-width:80px;text-align:center;}
+  .exam-timer.warning{color:var(--orange);}
+  .exam-timer.danger{color:var(--red);animation:pulse .8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .exam-progress-text{color:var(--muted);font-size:.82rem;}
+
+  .exam-body{padding:28px 28px 40px;}
+
+  .exam-question-card{background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:28px;margin-bottom:16px;animation:fadeIn .3s ease;}
+  .exam-q-num{font-family:'Syne',sans-serif;font-size:.8rem;color:var(--muted);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+  .exam-q-text{font-size:1.1rem;line-height:1.75;margin-bottom:24px;font-weight:500;}
+  .exam-q-text code{background:var(--surface2);border-radius:6px;padding:2px 8px;font-family:'Courier New',monospace;font-size:.93rem;color:var(--accent2);}
+  .exam-no-calc{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--orange);margin-bottom:18px;}
+
+  .exam-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px;}
+  .exam-nav-btns{display:flex;gap:10px;}
+
+  /* Question dots */
+  .q-dots{display:flex;flex-wrap:wrap;gap:6px;padding:0 28px 20px;}
+  .q-dot{width:28px;height:28px;border-radius:7px;background:var(--surface2);border:1px solid var(--border);display:grid;place-items:center;font-size:.72rem;font-family:'Syne',sans-serif;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;}
+  .q-dot.answered{background:rgba(59,130,246,.2);border-color:var(--accent);color:var(--accent2);}
+  .q-dot.current{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+  /* Exam result */
+  .exam-result{padding:40px 28px;text-align:center;}
+  .result-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 24px;display:grid;place-items:center;position:relative;}
+  .result-circle.pass{background:conic-gradient(var(--green) var(--pct),var(--surface2) 0);}
+  .result-circle.fail{background:conic-gradient(var(--red) var(--pct),var(--surface2) 0);}
+  .result-circle::before{content:'';position:absolute;width:104px;height:104px;border-radius:50%;background:var(--card-bg);}
+  .result-pct{position:relative;font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;z-index:1;}
+  .result-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:8px;}
+  .result-sub{color:var(--muted);font-size:.92rem;margin-bottom:24px;line-height:1.6;}
+  .result-cert{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:10px 20px;font-size:.9rem;font-weight:600;margin-bottom:28px;}
+  .result-cert.gold{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--gold);}
+  .result-cert.red{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);}
+  .result-breakdown{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:28px;text-align:left;}
+  .breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+  .breakdown-row:last-child{border-bottom:none;}
+  .breakdown-row span:first-child{color:var(--muted);}
+  .breakdown-row span:last-child{font-weight:600;color:var(--text);}
+
+  /* ── Chat View ── */
+  #chat-view{max-width:720px;margin:0 auto;padding:36px 24px;}
+  .chat-header{margin-bottom:22px;}
+  .chat-header h2{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:5px;}
+  .chat-header p{color:var(--muted);font-size:.88rem;}
+  .chat-messages{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:18px;min-height:340px;max-height:460px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;margin-bottom:14px;scroll-behavior:smooth;}
   .msg{display:flex;gap:10px;animation:fadeIn .3s ease;}.msg.user{flex-direction:row-reverse;}
-  .msg-avatar{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:.8rem;flex-shrink:0;}
+  .msg-avatar{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:.78rem;flex-shrink:0;}
   .msg.ai .msg-avatar{background:linear-gradient(135deg,var(--accent),var(--accent2));}.msg.user .msg-avatar{background:var(--surface2);border:1px solid var(--border);}
-  .msg-bubble{background:var(--surface2);border-radius:16px;padding:12px 16px;font-size:.92rem;line-height:1.7;max-width:78%;border:1px solid var(--border);word-break:break-word;}
+  .msg-bubble{background:var(--surface2);border-radius:15px;padding:11px 15px;font-size:.9rem;line-height:1.7;max-width:78%;border:1px solid var(--border);word-break:break-word;}
   .msg.user .msg-bubble{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.25);}
-  .msg-bubble code{background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--accent2);font-family:'Courier New',monospace;font-size:.88rem;}
+  .msg-bubble code{background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--accent2);font-family:'Courier New',monospace;font-size:.86rem;}
   .chat-input-row{display:flex;gap:10px;}
-  .chat-input{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;transition:border-color .2s;resize:none;}
+  .chat-input{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:13px;padding:11px 15px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.93rem;transition:border-color .2s;resize:none;}
   .chat-input:focus{outline:none;border-color:var(--accent);}.chat-input::placeholder{color:var(--muted);}
-  .error-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:14px 18px;margin-top:10px;font-size:.8rem;color:#fca5a5;font-family:'Courier New',monospace;word-break:break-all;max-height:100px;overflow-y:auto;}
-  @media(max-width:600px){header{padding:14px 16px}.stats-bar{gap:20px}.hero{padding:50px 16px 30px}.subject-grid{padding:0 16px 40px}#practice-view,#chat-view{padding:24px 16px}.question-card{padding:20px}}
-  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--surface)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
+  .error-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px 15px;margin-top:8px;font-size:.78rem;color:#fca5a5;font-family:'Courier New',monospace;word-break:break-all;max-height:90px;overflow-y:auto;}
+
+  /* Overlay for exam start */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .overlay.hidden{display:none;}
+  .modal{background:var(--card-bg);border:1px solid var(--border);border-radius:24px;padding:40px;max-width:480px;width:90%;text-align:center;}
+  .modal h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:12px;}
+  .modal p{color:var(--muted);font-size:.9rem;line-height:1.7;margin-bottom:10px;}
+  .modal-rules{background:var(--surface2);border-radius:12px;padding:16px 18px;margin:16px 0;text-align:left;}
+  .modal-rule{display:flex;align-items:flex-start;gap:10px;font-size:.86rem;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+  .modal-rule:last-child{margin-bottom:0;}
+  .modal-rule .icon{flex-shrink:0;font-size:1rem;}
+  .modal-btns{display:flex;gap:10px;justify-content:center;margin-top:20px;}
+
+  @media(max-width:600px){
+    header{padding:12px 16px}
+    .stats-bar{gap:16px}
+    .hero{padding:44px 16px 28px}
+    .subject-grid{padding:0 16px 20px}
+    #practice-view,#chat-view{padding:20px 14px}
+    .question-card{padding:20px}
+    .exam-topbar{padding:12px 16px}
+    .exam-body{padding:16px 16px 32px}
+    .q-dots{padding:0 16px 16px}
+  }
+  ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--surface)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
 </style>
 </head>
 <body>
+
+<!-- Exam Start Modal -->
+<div class="overlay hidden" id="exam-modal">
+  <div class="modal">
+    <div style="font-size:2.5rem;margin-bottom:12px;">📝</div>
+    <h2>Exam Simulation</h2>
+    <p>This simulates the real TOFAS exam experience.</p>
+    <div class="modal-rules">
+      <div class="modal-rule"><span class="icon">⏱️</span><span><strong style="color:var(--text)">40 minutes</strong> — same as the real exam. Timer starts when you click Begin.</span></div>
+      <div class="modal-rule"><span class="icon">🚫</span><span><strong style="color:var(--orange)">No calculator allowed</strong> — use mental math only, just like the real exam.</span></div>
+      <div class="modal-rule"><span class="icon">📋</span><span><strong style="color:var(--text)">20 questions</strong> — mix of multiple choice and numerical input (Calculation) or multiple choice (Programming).</span></div>
+      <div class="modal-rule"><span class="icon">🏆</span><span>Certificate awarded for <strong style="color:var(--gold)" id="modal-cert-threshold">80%+</strong> — that's <strong id="modal-cert-score">16/20</strong> correct answers.</span></div>
+      <div class="modal-rule"><span class="icon">💡</span><span>No explanations during the exam — review answers at the end.</span></div>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);">Select your level:</p>
+    <div id="modal-level-selector" style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:10px 0;"></div>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeExamModal()">Cancel</button>
+      <button class="btn-primary" onclick="startExam()" id="begin-btn">Begin Exam →</button>
+    </div>
+  </div>
+</div>
 
 <header>
   <div class="logo"><div class="logo-badge">T</div>TOFAS<span>Prep</span></div>
   <nav id="main-nav">
     <button class="active" onclick="showView('home',0)">🏠 Home</button>
-    <button onclick="showView('chat',1)">🤖 AI Tutor</button>
+    <button onclick="showView('practice',1)">📚 Practice</button>
+    <button onclick="showView('chat',2)">🤖 AI Tutor</button>
   </nav>
 </header>
 
+<!-- HOME -->
 <div id="home-view" class="view active">
   <div class="hero">
-    <div class="eyebrow">✦ AI-Powered Exam Prep</div>
-    <h1>Ace Your<br><em>TOFAS Exam</em></h1>
-    <p>Practice with AI-generated questions tailored to every TOFAS level — get instant feedback, explanations, and a personal tutor.</p>
+    <div class="eyebrow">✦ AI-Powered TOFAS Prep</div>
+    <h1>Prepare for Your<br><em>TOFAS Exam</em></h1>
+    <p>AI-generated practice questions, a real exam simulator with 40-minute timer, and a personal AI tutor — everything you need to pass.</p>
   </div>
+
+  <div class="no-calc-banner">
+    <div class="icon">🚫🧮</div>
+    <div>
+      <strong>No Calculator in the Real Exam!</strong>
+      <span>TOFAS tests your mental calculation skills. Always practice without a calculator — just like the real exam. This app never uses one either.</span>
+    </div>
+  </div>
+
   <div class="stats-bar">
     <div class="stat"><div class="stat-num">6</div><div class="stat-label">Levels</div></div>
     <div class="stat"><div class="stat-num">2</div><div class="stat-label">Subjects</div></div>
-    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">AI Questions</div></div>
     <div class="stat"><div class="stat-num">40m</div><div class="stat-label">Exam Duration</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Practice Questions</div></div>
   </div>
+
   <div class="subject-grid">
-    <div class="subject-card math" onclick="openPractice('math')">
-      <div class="card-icon">🧮</div><div class="card-title">Calculation</div>
-      <div class="card-desc">Master arithmetic, algebra, and equations — from basic addition to quadratic equations.</div>
-      <div class="level-pills"><span class="level-pill">L1 · Addition/Subtraction</span><span class="level-pill">L2 · Multiply/Divide</span><span class="level-pill">L3 · Fractions/Decimals</span><span class="level-pill">L4 · Algebra</span><span class="level-pill">L5 · Equations</span><span class="level-pill">L6 · Quadratics</span></div>
-      <button class="start-btn">Start Practicing →</button>
+    <div class="subject-card math">
+      <div class="card-icon">🧮</div>
+      <div class="card-title">Calculation</div>
+      <div class="card-desc">Master arithmetic, algebra, and equations — from basic addition to quadratic equations. No calculator needed.</div>
+      <div class="cert-info gold">🏆 Certificate awarded for 80% or higher</div>
+      <div class="level-pills">
+        <span class="level-pill">L1 · Add/Subtract/Multiply</span>
+        <span class="level-pill">L2 · Divide/Decimals/Fractions</span>
+        <span class="level-pill">L3 · Fractions & Decimal Ops</span>
+        <span class="level-pill">L4 · Algebra & Negatives</span>
+        <span class="level-pill">L5 · Equations & Systems</span>
+        <span class="level-pill">L6 · Quadratics & Polynomials</span>
+      </div>
+      <div class="card-btns">
+        <button class="start-btn math" onclick="openPractice('math')">Practice Mode</button>
+        <button class="exam-btn" onclick="openExamModal('math')">⏱ Exam Mode</button>
+      </div>
     </div>
-    <div class="subject-card prog" onclick="openPractice('prog')">
-      <div class="card-icon">💻</div><div class="card-title">Programming</div>
-      <div class="card-desc">Understand sequential logic, conditionals, loops and more — for Scratch and JavaScript/Python.</div>
-      <div class="level-pills"><span class="level-pill">L1 · Sequential / Output</span><span class="level-pill">L2 · Loops / Arrays</span><span class="level-pill">L3 · Functions</span><span class="level-pill">L4 · Lists / Switch</span><span class="level-pill">L5 · Advanced Arrays</span><span class="level-pill">L6 · Classes / Timers</span></div>
-      <button class="start-btn">Start Practicing →</button>
+
+    <div class="subject-card prog">
+      <div class="card-icon">💻</div>
+      <div class="card-title">Programming</div>
+      <div class="card-desc">Understand sequential logic, conditionals, loops, arrays and more — for Scratch and JavaScript/Python.</div>
+      <div class="cert-info green">🏆 Certificate awarded for 60% or higher</div>
+      <div class="level-pills">
+        <span class="level-pill">L1 · Sequential / Output</span>
+        <span class="level-pill">L2 · Loops / Arrays</span>
+        <span class="level-pill">L3 · Functions / Variables</span>
+        <span class="level-pill">L4 · Lists / Switch / While</span>
+        <span class="level-pill">L5 · Advanced Arrays</span>
+        <span class="level-pill">L6 · Classes / Timers</span>
+      </div>
+      <div class="card-btns">
+        <button class="start-btn prog" onclick="openPractice('prog')">Practice Mode</button>
+        <button class="exam-btn" onclick="openExamModal('prog')">⏱ Exam Mode</button>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- PRACTICE -->
 <div id="practice-view" class="view">
-  <div class="practice-header">
-    <button class="back-btn" onclick="showView('home',0)">← Back</button>
-    <div class="practice-meta"><h2 id="prac-title">Practice</h2><p id="prac-subtitle">Select a level</p></div>
-  </div>
-  <div class="level-selector" id="level-selector"></div>
-  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
-  <div id="quiz-area">
-    <div class="question-card" style="text-align:center;padding:60px 32px;">
-      <div style="font-size:3rem;margin-bottom:16px;">🎯</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">Ready to practice?</div>
-      <div style="color:var(--muted);font-size:.9rem;margin-bottom:24px;">Select a level above, then click Generate.</div>
-      <button class="btn-primary" onclick="generateQuestion()">Generate Question</button>
+  <div id="practice-inner" style="max-width:800px;margin:0 auto;padding:36px 24px;">
+    <div class="practice-header">
+      <button class="back-btn" onclick="showView('home',0)">← Back</button>
+      <div class="practice-meta">
+        <h2 id="prac-title">Practice Mode</h2>
+        <p id="prac-subtitle">Unlimited questions with instant feedback</p>
+      </div>
+      <div class="session-score" id="session-score" style="display:none">0/0 correct</div>
+    </div>
+    <div class="practice-reminder">🚫 No calculator — solve mentally, just like the real exam!</div>
+    <div class="level-selector" id="level-selector"></div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+    <div id="quiz-area">
+      <div class="question-card" style="text-align:center;padding:60px 32px;">
+        <div style="font-size:3rem;margin-bottom:14px;">🎯</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:8px;">Select a level and start practicing</div>
+        <div style="color:var(--muted);font-size:.87rem;margin-bottom:22px;">Click Generate to get an AI-powered TOFAS-style question.</div>
+        <button class="btn-primary" onclick="generateQuestion()">Generate Question</button>
+      </div>
     </div>
   </div>
 </div>
 
-<div id="chat-view" class="view">
-  <div class="chat-header"><h2>🤖 AI TOFAS Tutor</h2><p>Ask anything about TOFAS topics — math, programming, study tips.</p></div>
-  <div class="chat-messages" id="chat-messages">
-    <div class="msg ai"><div class="msg-avatar">🤖</div><div class="msg-bubble">Hi! I'm your TOFAS AI tutor. I can help with calculation (Level 1–6) and programming (Scratch, JS, Python). What would you like to work on?</div></div>
+<!-- EXAM -->
+<div id="exam-view" class="view">
+  <div class="exam-topbar">
+    <div>
+      <div class="exam-title" id="exam-title">TOFAS Exam Simulation</div>
+      <div class="exam-progress-text" id="exam-progress">Question 1 of 20</div>
+    </div>
+    <div class="exam-timer" id="exam-timer">40:00</div>
+    <button class="btn-secondary" onclick="confirmExitExam()" style="font-size:.8rem;padding:7px 14px;">Exit Exam</button>
   </div>
-  <div class="chat-input-row">
-    <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask a question…" onkeydown="handleChatKey(event)"></textarea>
-    <button class="btn-primary" onclick="sendChat()" id="send-btn">Send</button>
+  <div class="q-dots" id="q-dots"></div>
+  <div class="exam-body" id="exam-body">
+    <div class="exam-question-card">
+      <div class="ai-loading"><div class="spinner"></div> Loading exam questions…</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="chat-view" class="view">
+  <div style="max-width:720px;margin:0 auto;padding:36px 24px;">
+    <div class="chat-header">
+      <h2>🤖 AI TOFAS Tutor</h2>
+      <p>Ask anything about TOFAS topics — math concepts, programming logic, exam tips, or specific questions you got wrong.</p>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg ai"><div class="msg-avatar">🤖</div>
+      <div class="msg-bubble">Hi! I'm your TOFAS AI tutor. I can help you understand any topic from Calculation (L1–L6) or Programming (Scratch, JS, Python). Remember — practice without a calculator! What would you like to work on?</div></div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chat-input" rows="1" placeholder="Ask a question…" onkeydown="handleChatKey(event)"></textarea>
+      <button class="btn-primary" onclick="sendChat()" id="send-btn">Send</button>
+    </div>
   </div>
 </div>
 
 <script>
-// All API calls go to our own backend server — no keys in frontend
 async function callAPI(system, messages) {
   const res = await fetch('/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ system, messages })
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({system,messages})
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Server error ' + res.status);
+  if(!res.ok) throw new Error(data.error||'Server error '+res.status);
   return data.text;
 }
 
-let currentSubject='math', currentLevel=1, selectedOption=null;
-let answered=false, sessionCorrect=0, sessionTotal=0, questionCount=0;
-let chatHistory=[], currentQuestion=null;
-
+// ── TOFAS Official Content ──
 const LEVELS = {
   math:[
-    {n:1,label:'L1',title:'Addition & Subtraction',topics:'addition and subtraction of whole numbers up to 100'},
-    {n:2,label:'L2',title:'Multiply & Divide',topics:'multiplication tables, long division, order of operations, decimals'},
-    {n:3,label:'L3',title:'Fractions & Decimals',topics:'fraction operations, decimal operations, mixed numbers'},
-    {n:4,label:'L4',title:'Algebra Basics',topics:'positive/negative numbers, algebraic expressions, simple equations'},
-    {n:5,label:'L5',title:'Equations',topics:'linear equations, systems of equations, algebraic manipulation'},
-    {n:6,label:'L6',title:'Quadratics',topics:'square roots, polynomial operations, quadratic equations, factoring'},
+    {n:1,label:'L1',title:'Add, Subtract & Multiply',
+     topics:'addition of whole numbers (e.g. 47+36, 123+89), subtraction of whole numbers (e.g. 84-29, 200-67), basic multiplication times tables up to 10x10 (e.g. 7x8, 9x6). Single-step calculations. 2nd grade level.',
+     certThreshold:80},
+    {n:2,label:'L2',title:'Multiply, Divide & Fractions',
+     topics:'multiplication of multi-digit numbers, long division, order of operations (BODMAS/PEMDAS with +,-,*,/), operations with decimals (add/subtract/multiply), adding and subtracting fractions with same or different denominators. 4th grade level.',
+     certThreshold:80},
+    {n:3,label:'L3',title:'Fractions & Decimal Operations',
+     topics:'multiplication and division of decimals, multiplication and division of fractions, order of operations with mixed decimal and fraction expressions, converting between fractions and decimals, operations with mixed numbers. 6th grade level.',
+     certThreshold:80},
+    {n:4,label:'L4',title:'Algebra & Negative Numbers',
+     topics:'operations with positive and negative integers, operations combining decimals and fractions, introduction to algebraic expressions (simplifying, substituting), solving simple one-variable equations (e.g. 2x+3=7, x/4-1=5). 7th grade level.',
+     certThreshold:80},
+    {n:5,label:'L5',title:'Equations & Systems',
+     topics:'operations with positive and negative numbers, simplifying and evaluating algebraic expressions, solving linear equations in one variable, solving systems of two linear equations (substitution and elimination methods). 8th grade level.',
+     certThreshold:80},
+    {n:6,label:'L6',title:'Quadratics & Polynomials',
+     topics:'square roots and simplification, polynomial addition and subtraction, polynomial multiplication, factoring polynomials (common factor, difference of squares, trinomials), solving quadratic equations by factoring and quadratic formula. 9th grade level.',
+     certThreshold:80},
   ],
   prog:[
-    {n:1,label:'L1',title:'Sequential Logic',topics:'sequential processing, output, operators, if statements in Scratch and JS/Python'},
-    {n:2,label:'L2',title:'Loops & Arrays',topics:'for loops, string concatenation, logical operators, arrays'},
-    {n:3,label:'L3',title:'Functions',topics:'variable types, random numbers, defining and calling functions'},
-    {n:4,label:'L4',title:'Lists & Switch',topics:'switch, array operations, while loops, break and continue'},
-    {n:5,label:'L5',title:'Advanced Arrays',topics:'type checking, insert/replace/sort, 2D arrays, exception handling'},
-    {n:6,label:'L6',title:'Classes & Timers',topics:'timers, associative arrays, classes and methods'},
+    {n:1,label:'L1',title:'Sequential & Conditional',
+     topics:'sequential processing (step-by-step instructions), output statements (print/say blocks), arithmetic operators (+,-,*,/), if/else conditional branching, inequality comparisons (<,>,<=,>=), repeat/loop blocks in Scratch, parallel processing and angle/direction in Scratch. JS/Python: sequential statements, print/output, operators, if/elif/else, inequalities.',
+     certThreshold:60},
+    {n:2,label:'L2',title:'Loops, Arrays & Randoms',
+     topics:'for loops and counting iteration, string concatenation (joining strings), inequivalence checks (!=, !==), logical operators (AND/OR/NOT, &&/||/!), arrays (declare, access by index, array length), coordinates and movement in Scratch, random number generation. Both Scratch and JS/Python.',
+     certThreshold:60},
+    {n:3,label:'L3',title:'Functions & Variable Types',
+     topics:'variable types: integers, strings, booleans — declaring and using them, logical operators applied to boolean variables, random number functions, defining functions with parameters, calling functions and using return values, using for loops to iterate through arrays. Variables and custom blocks in Scratch.',
+     certThreshold:60},
+    {n:4,label:'L4',title:'Switch, While & Array Ops',
+     topics:'switch/case statements for multiple conditions, array operations (push/append to add, splice/pop/remove to delete, access by index), constants (const/final), while loops for condition-based iteration, break statement to exit loops, continue statement to skip iterations. Functions and lists in Scratch.',
+     certThreshold:60},
+    {n:5,label:'L5',title:'Advanced Arrays & Error Handling',
+     topics:'null and undefined values, type checking (typeof in JS, type()/isinstance() in Python), inserting elements at specific positions in arrays, replacing array elements, sorting arrays, two-dimensional arrays (matrix creation and access), exception handling (try/catch in JS, try/except in Python). JavaScript and Python only.',
+     certThreshold:60},
+    {n:6,label:'L6',title:'Classes, Objects & Timers',
+     topics:'timer functions (setTimeout/setInterval/clearTimeout in JS, time.sleep/datetime in Python), associative arrays (objects in JS, dictionaries in Python — key-value pairs, adding/accessing/modifying keys), defining classes with constructors and instance methods, creating objects/instances, basic inheritance. JavaScript and Python only.',
+     certThreshold:60},
   ]
 };
 
+// ── State ──
+let currentSubject='math', currentLevel=1, selectedOption=null;
+let answered=false, sessionCorrect=0, sessionTotal=0, questionCount=0;
+let chatHistory=[], currentQuestion=null, askedQuestions={};
+
+// Exam state
+let examSubject='math', examLevel=1, examQuestions=[], examAnswers=[];
+let examCurrentQ=0, examTimerInterval=null, examSecondsLeft=2400;
+let examModalSubject='math';
+
+// ── Navigation ──
 function showView(name,navIdx){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById(name+'-view').classList.add('active');
@@ -209,49 +435,68 @@ function showView(name,navIdx){
   btns.forEach(b=>b.classList.remove('active'));
   if(navIdx!==null&&btns[navIdx])btns[navIdx].classList.add('active');
 }
+
 function openPractice(subject){
   currentSubject=subject;currentLevel=1;selectedOption=null;answered=false;
   questionCount=0;sessionCorrect=0;sessionTotal=0;currentQuestion=null;
   document.getElementById('prac-title').textContent=subject==='math'?'🧮 Calculation Practice':'💻 Programming Practice';
-  document.getElementById('prac-subtitle').textContent=subject==='math'?'Multiple choice & numerical input':'Multiple choice — Scratch / JS / Python';
-  buildLevelSelector();resetQuizArea();showView('practice',null);
-  document.querySelectorAll('#main-nav button')[0].classList.add('active');
+  document.getElementById('prac-subtitle').textContent=subject==='math'?'All levels — multiple choice & numerical input':'All levels — multiple choice (Scratch / JS / Python)';
+  document.getElementById('session-score').style.display='none';
+  buildLevelSelector();resetQuizArea();showView('practice',1);
 }
+
 function buildLevelSelector(){
   document.getElementById('level-selector').innerHTML=LEVELS[currentSubject].map((l,i)=>
     `<button class="lvl-btn ${i===0?'active':''}" onclick="setLevel(${l.n},this)">${l.label} · ${l.title}</button>`).join('');
 }
+
 function setLevel(n,btn){
   currentLevel=n;
   document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');resetQuizArea();
 }
+
 function resetQuizArea(){
   answered=false;selectedOption=null;currentQuestion=null;
   const bar=document.getElementById('progress-bar');if(bar)bar.style.width='0%';
   document.getElementById('quiz-area').innerHTML=`
     <div class="question-card" style="text-align:center;padding:60px 32px;">
-      <div style="font-size:3rem;margin-bottom:16px;">🎯</div>
-      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">Level ${currentLevel} Selected</div>
-      <div style="color:var(--muted);font-size:.9rem;margin-bottom:24px;">Click Generate to get an AI-powered TOFAS-style question.</div>
+      <div style="font-size:3rem;margin-bottom:14px;">🎯</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:8px;">Level ${currentLevel} Selected</div>
+      <div style="color:var(--muted);font-size:.87rem;margin-bottom:22px;">Click Generate to get an AI-powered TOFAS-style question.</div>
       <button class="btn-primary" onclick="generateQuestion()">Generate Question</button>
     </div>`;
 }
+
+// ── Helpers ──
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function renderText(raw){return String(raw).split(/`([^`]+)`/).map((p,i)=>i%2===1?'<code>'+escHtml(p)+'</code>':escHtml(p).replace(/\n/g,'<br>')).join('');}
 
+// ── Question Generation (Practice) ──
 async function generateQuestion(){
   const level=LEVELS[currentSubject].find(l=>l.n===currentLevel);
   answered=false;selectedOption=null;currentQuestion=null;questionCount++;
   document.getElementById('quiz-area').innerHTML=`<div class="question-card"><div class="ai-loading"><div class="spinner"></div> Generating question…</div></div>`;
+
   const isCalc=currentSubject==='math';
-  const useNumerical=isCalc&&currentLevel<=3;
-  const system=`You are a TOFAS exam question generator. Output ONLY a raw JSON object — no markdown, no explanation, nothing before or after.
+  const useNumerical=isCalc&&Math.random()<0.5;
+  const key=`${currentSubject}-${currentLevel}`;
+  if(!askedQuestions[key])askedQuestions[key]=[];
+  const prev=askedQuestions[key];
+  const seed=Math.floor(Math.random()*99999);
+  const hints=['Use different numbers.','Try a word problem.','Use a real-life scenario.','Make it multi-step.','Use large numbers.','Focus on a different sub-topic within this level.','Use negative numbers if appropriate for this level.','Vary the structure completely.'];
+  const hint=hints[Math.floor(Math.random()*hints.length)];
+  const avoid=prev.length>0?`\nDo NOT repeat these previous questions:\n${prev.slice(-6).map((q,i)=>`${i+1}. ${q}`).join('\n')}`:'';
+
+  const system=`You are a TOFAS exam question generator. Output ONLY a raw JSON object — no markdown, no explanation.
 ${useNumerical?'Format: {"question":"...","type":"numerical","correctAnswer":"42","explanation":"..."}':'Format: {"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0,"explanation":"..."}'}
-All values must be plain strings. Start with { and end with }.`;
-  const prompt=isCalc
-    ?`Generate one TOFAS Calculation Level ${currentLevel} question. Topics: ${level.topics}. ${useNumerical?'Use numerical type.':'Use mcq type with 4 options.'} Match Level ${currentLevel} difficulty.`
-    :`Generate one TOFAS Programming Level ${currentLevel} multiple choice question. Topics: ${level.topics}. Include a short JS or Python code snippet where helpful. 4 options, one correct. Match Level ${currentLevel} difficulty.`;
+Rules: all values plain strings. Start with { end with }. NEVER use a calculator hint in questions. Questions must be solvable by mental math.`;
+
+  const prompt=`[Seed:${seed}] Generate one UNIQUE TOFAS ${currentSubject==='math'?'Calculation':'Programming'} Level ${currentLevel} question.
+Topics: ${level.topics}.
+${isCalc?(useNumerical?'Use numerical input type.':'Use mcq type with 4 options.'):'Use mcq type with 4 options. Include a short code snippet where appropriate.'}
+Difficulty: match official TOFAS Level ${currentLevel}. ${hint}${avoid}`;
+
   try{
     const raw=await callAPI(system,[{role:'user',content:prompt}]);
     const clean=raw.replace(/^```[\w]*\s*/,'').replace(/```\s*$/,'').trim();
@@ -259,28 +504,35 @@ All values must be plain strings. Start with { and end with }.`;
     if(!q.question||!q.type)throw new Error('Missing fields');
     if(q.type==='mcq'&&(!Array.isArray(q.options)||q.options.length<2))throw new Error('MCQ missing options');
     if(q.type==='numerical'&&q.correctAnswer===undefined)throw new Error('Missing correctAnswer');
+    askedQuestions[key].push(q.question.substring(0,80));
     currentQuestion=q;renderQuestion(q,level);
   }catch(e){
     document.getElementById('quiz-area').innerHTML=`
       <div class="question-card" style="text-align:center;padding:40px 24px;">
-        <div style="font-size:2rem;margin-bottom:12px;">⚠️</div>
+        <div style="font-size:2rem;margin-bottom:10px;">⚠️</div>
         <div style="color:var(--red);font-weight:600;margin-bottom:8px;">Failed to load question</div>
         <div class="error-box">${escHtml(e.message)}</div>
-        <div style="margin-top:16px;"><button class="btn-primary" onclick="generateQuestion()">Try Again</button></div>
+        <div style="margin-top:14px;"><button class="btn-primary" onclick="generateQuestion()">Try Again</button></div>
       </div>`;
   }
 }
+
 function renderQuestion(q,level){
   const isMcq=q.type==='mcq';
-  const scoreHtml=sessionTotal>0?`<span style="margin-left:auto;color:var(--muted);font-size:.8rem;">${sessionCorrect}/${sessionTotal} correct</span>`:'';
+  if(sessionTotal>0){
+    const sc=document.getElementById('session-score');
+    sc.style.display='block';
+    sc.textContent=`${sessionCorrect}/${sessionTotal} correct`;
+  }
   const inputHtml=isMcq
     ?`<div class="options" id="options">${q.options.map((o,i)=>`<button class="option" id="opt-${i}" onclick="selectOption(${i})"><span class="opt-letter">${'ABCD'[i]}</span><span>${escHtml(String(o))}</span></button>`).join('')}</div>`
     :`<div class="num-input-wrap"><input type="number" step="any" class="num-input" id="num-ans" placeholder="Enter your answer"><button class="btn-primary" id="check-btn" onclick="checkNumerical()">Check</button></div>`;
   document.getElementById('quiz-area').innerHTML=`
     <div class="question-card">
       <div class="q-meta">
-        <span class="q-badge">${currentSubject==='math'?'🧮 Calculation':'💻 Programming'} · Level ${currentLevel}</span>
-        <span class="q-num">Q${questionCount} · ${escHtml(level.title)}</span>${scoreHtml}
+        <span class="q-badge">${currentSubject==='math'?'🧮 Calculation':'💻 Programming'} · ${level.label} · ${level.title}</span>
+        <span class="q-num">Q${questionCount}</span>
+        <span style="margin-left:auto;font-size:.75rem;color:var(--orange)">🚫 No calculator</span>
       </div>
       <div class="q-text">${renderText(q.question)}</div>
       ${inputHtml}
@@ -292,11 +544,13 @@ function renderQuestion(q,level){
     </div>`;
   if(!isMcq){const inp=document.getElementById('num-ans');if(inp){inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkNumerical();});inp.focus();}}
 }
+
 function selectOption(i){
   if(answered)return;selectedOption=i;
   document.querySelectorAll('.option').forEach((o,idx)=>o.classList.toggle('selected',idx===i));
   const btn=document.getElementById('submit-btn');if(btn)btn.disabled=false;
 }
+
 function submitMcq(){
   if(answered||selectedOption===null||!currentQuestion)return;
   answered=true;sessionTotal++;
@@ -308,8 +562,9 @@ function submitMcq(){
     if(i===correct)o.classList.add('correct');
     else if(i===selectedOption&&!isCorrect)o.classList.add('wrong');
   });
-  showFeedback(isCorrect,currentQuestion.explanation);updateProgress();
+  showPracticeFeedback(isCorrect,currentQuestion.explanation);updateProgress();
 }
+
 function checkNumerical(){
   if(answered||!currentQuestion)return;
   const inp=document.getElementById('num-ans');if(!inp||inp.value==='')return;
@@ -320,10 +575,11 @@ function checkNumerical(){
   if(isCorrect)sessionCorrect++;
   inp.style.borderColor=isCorrect?'var(--green)':'var(--red)';inp.disabled=true;
   const cb=document.getElementById('check-btn');if(cb)cb.disabled=true;
-  const extra=!isCorrect?`<div style="color:var(--muted);font-size:.85rem;margin-top:6px;">Correct: <strong style="color:var(--text)">${escHtml(String(currentQuestion.correctAnswer))}</strong> · Your answer: ${escHtml(inp.value)}</div>`:'';
-  showFeedback(isCorrect,currentQuestion.explanation,extra);updateProgress();
+  const extra=!isCorrect?`<div style="color:var(--muted);font-size:.83rem;margin-top:5px;">Correct answer: <strong style="color:var(--text)">${escHtml(String(currentQuestion.correctAnswer))}</strong></div>`:'';
+  showPracticeFeedback(isCorrect,currentQuestion.explanation,extra);updateProgress();
 }
-function showFeedback(isCorrect,explanation,extraHtml){
+
+function showPracticeFeedback(isCorrect,explanation,extraHtml){
   document.getElementById('feedback-area').innerHTML=`
     <div class="explanation ${isCorrect?'':'wrong-exp'}">
       <div class="exp-title">${isCorrect?'✅ Correct!':'❌ Incorrect'}</div>
@@ -331,12 +587,269 @@ function showFeedback(isCorrect,explanation,extraHtml){
     </div>`;
   document.getElementById('action-row').innerHTML=`<button class="btn-primary" onclick="generateQuestion()">Next Question →</button>`;
 }
+
 function updateProgress(){
   if(sessionTotal===0)return;
   const bar=document.getElementById('progress-bar');
   if(bar)bar.style.width=Math.round((sessionCorrect/sessionTotal)*100)+'%';
 }
+
+// ── EXAM MODE ──
+function openExamModal(subject){
+  examModalSubject=subject;
+  const certThreshold=LEVELS[subject][0].certThreshold;
+  document.getElementById('modal-cert-threshold').textContent=certThreshold+'%+';
+  document.getElementById('modal-cert-score').textContent=`${Math.ceil(20*certThreshold/100)}/20`;
+
+  // Build level selector in modal
+  const sel=document.getElementById('modal-level-selector');
+  sel.innerHTML=LEVELS[subject].map((l,i)=>
+    `<button class="lvl-btn ${i===0?'active':''}" style="font-size:.78rem;padding:6px 12px;" onclick="selectModalLevel(${l.n},this)">${l.label} · ${l.title}</button>`
+  ).join('');
+  examLevel=1;
+  document.getElementById('exam-modal').classList.remove('hidden');
+}
+
+function selectModalLevel(n,btn){
+  examLevel=n;
+  document.querySelectorAll('#modal-level-selector .lvl-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function closeExamModal(){
+  document.getElementById('exam-modal').classList.add('hidden');
+}
+
+async function startExam(){
+  examSubject=examModalSubject;
+  closeExamModal();
+  examQuestions=[];examAnswers=[];examCurrentQ=0;
+  showView('exam',null);
+  document.getElementById('exam-title').textContent=
+    (examSubject==='math'?'🧮 Calculation':'💻 Programming')+' · Level '+examLevel+' · Exam Simulation';
+
+  // Show loading dots
+  renderQDots();
+  document.getElementById('exam-body').innerHTML=`
+    <div class="exam-question-card">
+      <div class="ai-loading"><div class="spinner"></div> Generating 20 exam questions… this may take 30–60 seconds.</div>
+    </div>`;
+
+  // Generate all 20 questions upfront
+  const level=LEVELS[examSubject].find(l=>l.n===examLevel);
+  const isCalc=examSubject==='math';
+  const system=`You are a TOFAS exam question generator. Output ONLY a raw JSON array of 20 question objects — no markdown, no explanation.
+Each object: ${isCalc?'{"question":"...","type":"mcq" or "numerical","options":["A","B","C","D"] (only for mcq),"correctIndex":0 (only for mcq),"correctAnswer":"42" (only for numerical)}':'{"question":"...","type":"mcq","options":["A","B","C","D"],"correctIndex":0}'}
+Rules: all values plain strings. Mix question types and sub-topics across all 20. Vary difficulty slightly. Start with [ end with ]. No explanations in exam mode.`;
+
+  const prompt=`Generate exactly 20 UNIQUE TOFAS ${examSubject==='math'?'Calculation':'Programming'} Level ${examLevel} exam questions.
+Topics: ${level.topics}.
+${isCalc?'Mix multiple choice (mcq) and numerical input types across the 20 questions.':'All multiple choice (mcq). Include code snippets where appropriate.'}
+Make sure all 20 questions are different — cover different aspects of the topics. Match official TOFAS Level ${examLevel} difficulty.`;
+
+  try{
+    const raw=await callAPI(system,[{role:'user',content:prompt}]);
+    const clean=raw.replace(/^```[\w]*\s*/,'').replace(/```\s*$/,'').trim();
+    examQuestions=JSON.parse(clean);
+    if(!Array.isArray(examQuestions)||examQuestions.length<10)throw new Error('Not enough questions generated');
+    examQuestions=examQuestions.slice(0,20);
+    examAnswers=new Array(examQuestions.length).fill(null);
+    renderQDots();
+    renderExamQuestion();
+    startExamTimer();
+  }catch(e){
+    document.getElementById('exam-body').innerHTML=`
+      <div class="exam-question-card" style="text-align:center;padding:40px;">
+        <div style="font-size:2rem;margin-bottom:10px;">⚠️</div>
+        <div style="color:var(--red);font-weight:600;margin-bottom:8px;">Failed to load exam</div>
+        <div class="error-box">${escHtml(e.message)}</div>
+        <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;">
+          <button class="btn-primary" onclick="startExam()">Try Again</button>
+          <button class="btn-secondary" onclick="showView('home',0)">Go Back</button>
+        </div>
+      </div>`;
+  }
+}
+
+function renderQDots(){
+  const total=examQuestions.length||20;
+  document.getElementById('q-dots').innerHTML=Array.from({length:total},(_,i)=>{
+    const ans=examAnswers[i];
+    const cls=i===examCurrentQ?'current':ans!==null?'answered':'';
+    return `<div class="q-dot ${cls}" onclick="goToExamQuestion(${i})">${i+1}</div>`;
+  }).join('');
+}
+
+function renderExamQuestion(){
+  const q=examQuestions[examCurrentQ];
+  const total=examQuestions.length;
+  document.getElementById('exam-progress').textContent=`Question ${examCurrentQ+1} of ${total}`;
+  renderQDots();
+
+  const savedAnswer=examAnswers[examCurrentQ];
+  const isMcq=q.type==='mcq'||q.type!=='numerical';
+
+  let inputHtml='';
+  if(isMcq&&q.options){
+    inputHtml=`<div class="options" id="exam-options">${q.options.map((o,i)=>`
+      <button class="option ${savedAnswer===i?'selected':''}" id="eopt-${i}" onclick="selectExamOption(${i})">
+        <span class="opt-letter">${'ABCD'[i]}</span><span>${escHtml(String(o))}</span>
+      </button>`).join('')}</div>`;
+  } else {
+    inputHtml=`<div class="num-input-wrap">
+      <input type="number" step="any" class="num-input" id="exam-num-ans" placeholder="Enter your answer" value="${savedAnswer!==null?savedAnswer:''}" oninput="saveExamNumerical(this.value)">
+    </div>`;
+  }
+
+  document.getElementById('exam-body').innerHTML=`
+    <div class="exam-question-card">
+      <div class="exam-no-calc">🚫 No calculator — mental math only</div>
+      <div class="exam-q-num">Question ${examCurrentQ+1} of ${total}</div>
+      <div class="exam-q-text">${renderText(q.question)}</div>
+      ${inputHtml}
+    </div>
+    <div class="exam-nav">
+      <button class="btn-secondary" onclick="goToExamQuestion(${examCurrentQ-1})" ${examCurrentQ===0?'disabled':''}>← Previous</button>
+      <div style="color:var(--muted);font-size:.82rem;">${examAnswers.filter(a=>a!==null).length}/${total} answered</div>
+      ${examCurrentQ<total-1
+        ?`<button class="btn-primary" onclick="goToExamQuestion(${examCurrentQ+1})">Next →</button>`
+        :`<button class="btn-primary" style="background:linear-gradient(135deg,var(--green),var(--accent2));" onclick="confirmSubmitExam()">Submit Exam ✓</button>`
+      }
+    </div>`;
+
+  if(!isMcq){
+    const inp=document.getElementById('exam-num-ans');
+    if(inp)inp.focus();
+  }
+}
+
+function selectExamOption(i){
+  examAnswers[examCurrentQ]=i;
+  document.querySelectorAll('#exam-options .option').forEach((o,idx)=>o.classList.toggle('selected',idx===i));
+  renderQDots();
+}
+
+function saveExamNumerical(val){
+  examAnswers[examCurrentQ]=val===''?null:val;
+  renderQDots();
+}
+
+function goToExamQuestion(idx){
+  if(idx<0||idx>=examQuestions.length)return;
+  // Save current numerical answer before navigating
+  const numInp=document.getElementById('exam-num-ans');
+  if(numInp&&numInp.value!=='')examAnswers[examCurrentQ]=numInp.value;
+  examCurrentQ=idx;
+  renderExamQuestion();
+}
+
+function confirmSubmitExam(){
+  const unanswered=examAnswers.filter(a=>a===null).length;
+  if(unanswered>0){
+    if(!confirm(`You have ${unanswered} unanswered question${unanswered>1?'s':''}. Submit anyway?`))return;
+  }
+  submitExam();
+}
+
+function confirmExitExam(){
+  if(confirm('Exit the exam? Your progress will be lost.'))endExam(true);
+}
+
+function submitExam(){
+  endExam(false);
+}
+
+function endExam(abandoned){
+  clearInterval(examTimerInterval);
+  if(abandoned){showView('home',0);return;}
+
+  // Calculate score
+  let correct=0;
+  examQuestions.forEach((q,i)=>{
+    const ans=examAnswers[i];
+    if(ans===null)return;
+    if(q.type==='numerical'||q.type!=='mcq'){
+      const userVal=parseFloat(String(ans));
+      const correctVal=parseFloat(String(q.correctAnswer||''));
+      if(!isNaN(userVal)&&!isNaN(correctVal)&&Math.abs(userVal-correctVal)<0.0001)correct++;
+    } else {
+      if(Number(ans)===Number(q.correctIndex))correct++;
+    }
+  });
+
+  const total=examQuestions.length;
+  const pct=Math.round((correct/total)*100);
+  const level=LEVELS[examSubject].find(l=>l.n===examLevel);
+  const certThreshold=level.certThreshold;
+  const passed=pct>=certThreshold;
+  const timeTaken=2400-examSecondsLeft;
+  const mins=Math.floor(timeTaken/60);
+  const secs=timeTaken%60;
+
+  const pctCss=`${pct*3.6}deg`;
+
+  document.getElementById('exam-body').innerHTML=`
+    <div class="exam-result">
+      <div class="result-circle ${passed?'pass':'fail'}" style="--pct:${pctCss}">
+        <div class="result-pct">${pct}%</div>
+      </div>
+      <div class="result-title">${passed?'🎉 Congratulations!':'📚 Keep Practicing!'}</div>
+      <div class="result-sub">
+        ${passed
+          ?`You passed Level ${examLevel} with ${pct}% — you qualify for a TOFAS certificate!`
+          :`You scored ${pct}%. You need ${certThreshold}% to earn a certificate. Keep practicing and try again!`
+        }
+      </div>
+      <div class="result-cert ${passed?'gold':'red'}">
+        ${passed?`🏆 Certificate Eligible (${certThreshold}%+ required)`:`❌ Not yet (${certThreshold}%+ required)`}
+      </div>
+      <div class="result-breakdown">
+        <div class="breakdown-row"><span>Subject</span><span>${examSubject==='math'?'🧮 Calculation':'💻 Programming'}</span></div>
+        <div class="breakdown-row"><span>Level</span><span>Level ${examLevel} — ${level.title}</span></div>
+        <div class="breakdown-row"><span>Score</span><span>${correct} / ${total} correct</span></div>
+        <div class="breakdown-row"><span>Percentage</span><span>${pct}%</span></div>
+        <div class="breakdown-row"><span>Time taken</span><span>${mins}m ${secs}s of 40m</span></div>
+        <div class="breakdown-row"><span>Certificate threshold</span><span>${certThreshold}%</span></div>
+        <div class="breakdown-row"><span>Result</span><span style="color:${passed?'var(--green)':'var(--red)'}">${passed?'PASS ✅':'NEEDS IMPROVEMENT ❌'}</span></div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="openExamModal('${examSubject}')">Try Again</button>
+        <button class="btn-secondary" onclick="openPractice('${examSubject}')">Practice Mode</button>
+        <button class="btn-secondary" onclick="showView('home',0)">Home</button>
+      </div>
+    </div>`;
+  document.getElementById('q-dots').innerHTML='';
+}
+
+// ── Exam Timer ──
+function startExamTimer(){
+  examSecondsLeft=2400;
+  updateTimerDisplay();
+  examTimerInterval=setInterval(()=>{
+    examSecondsLeft--;
+    updateTimerDisplay();
+    if(examSecondsLeft<=0){
+      clearInterval(examTimerInterval);
+      alert('Time is up! Your exam will now be submitted.');
+      submitExam();
+    }
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const mins=Math.floor(examSecondsLeft/60);
+  const secs=examSecondsLeft%60;
+  const el=document.getElementById('exam-timer');
+  if(!el)return;
+  el.textContent=`${mins}:${String(secs).padStart(2,'0')}`;
+  el.className='exam-timer';
+  if(examSecondsLeft<=300)el.classList.add('danger');
+  else if(examSecondsLeft<=600)el.classList.add('warning');
+}
+
+// ── Chat ──
 function handleChatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+
 async function sendChat(){
   const input=document.getElementById('chat-input');
   const msg=input.value.trim();if(!msg)return;
@@ -344,10 +857,11 @@ async function sendChat(){
   chatHistory.push({role:'user',content:msg});
   const sendBtn=document.getElementById('send-btn');sendBtn.disabled=true;
   const thinkingId=appendMsg('ai','⋯ Thinking…');
-  const system=`You are a friendly expert TOFAS exam tutor helping students prepare for:
-- Calculation (Levels 1-6): basic arithmetic up to quadratic equations
-- Programming (Levels 1-6): Scratch and JavaScript/Python
-Be concise, clear and encouraging. Show step-by-step working for math. Use backtick code spans for code. Keep answers under 200 words unless more detail is truly needed.`;
+  const system=`You are a friendly expert TOFAS exam tutor. Help students with:
+- Calculation (L1-L6): from basic arithmetic to quadratic equations. No calculator ever.
+- Programming (L1-L6): Scratch visual and JavaScript/Python text-based
+Be concise, clear, encouraging. Show step-by-step working for math (no calculator). Use backticks for code. Under 200 words unless truly needed.
+Always remind students: no calculator in the real TOFAS exam.`;
   try{
     const reply=await callAPI(system,chatHistory);
     chatHistory.push({role:'assistant',content:reply});
@@ -357,6 +871,7 @@ Be concise, clear and encouraging. Show step-by-step working for math. Use backt
   }
   sendBtn.disabled=false;input.focus();
 }
+
 let msgId=0;
 function appendMsg(role,text){
   const id='msg-'+(++msgId);
